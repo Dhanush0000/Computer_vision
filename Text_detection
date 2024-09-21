@@ -1,0 +1,166 @@
+import cv2
+import pytesseract
+import re
+from dateutil import parser as dateparser
+from datetime import datetime
+from fuzzywuzzy import fuzz  # For optional fuzzy matching
+
+# Set the path to the Tesseract executable (on Windows)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+
+# Function to use Tesseract OCR with config
+def tesseract_ocr_image(image):
+    # Use PSM 6 for block of text
+    custom_config = r'--oem 1 --psm 6'
+    return pytesseract.image_to_string(image, config=custom_config)
+
+
+# Clean up detected OCR text
+def clean_text(text):
+    cleaned_text = re.sub(r'[^a-zA-Z0-9\/\-\s]', '', text)
+    cleaned_text = cleaned_text.lower()
+    return cleaned_text
+
+
+# Preprocess image function (with alternative thresholding)
+def preprocess_image(image, resize_dim=(640, 480)):
+    resized_image = cv2.resize(image, resize_dim)
+    gray_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+    _, thresh_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    denoised_image = cv2.bilateralFilter(thresh_image, 9, 75, 75)
+    return denoised_image
+
+
+# Fuzzy matching function (optional)
+def is_keyword_fuzzy_match(keyword, text, threshold=80):
+    return fuzz.ratio(keyword, text) > threshold
+
+
+# Function to process an image and check for manufacture and expiry dates
+def process_image(image_path):
+    image = cv2.imread(image_path)
+    preprocessed_image = preprocess_image(image)
+    extracted_text = tesseract_ocr_image(preprocessed_image)
+
+    print("Detected Text Before Cleaning:\n", extracted_text)  # Debugging to see raw OCR text
+    cleaned_text = clean_text(extracted_text)
+    print("Cleaned Text:\n", cleaned_text)  # Debugging to see cleaned OCR text
+
+    product_lines = cleaned_text.split("\n")
+    products_with_dates = []
+    for line in product_lines:
+        dates_info = extract_dates(line)
+        if dates_info:
+            print(f"Dates found in line: {line.strip()} -> {dates_info}")  # Debug print
+            products_with_dates.append((line.strip(), dates_info))
+
+    if not products_with_dates:
+        print("No products with dates detected.")  # Debug print
+    return products_with_dates
+
+
+# Function to extract both manufacture and expiry dates from the text
+def extract_dates(text):
+    manufacture_keywords = ['manufacture', 'mfg', 'packed on', 'mfd', 'prod date', 'prod', 'packed']
+    expiry_keywords = ['expiry', 'exp', 'best before', 'use by', 'valid until', 'exp date', 'valid']
+
+    # Update the date patterns to match formats like 14 JAN 2024
+    date_patterns = [
+        r'(\d{2}[\/\-]\d{2}[\/\-]\d{4})',  # dd/mm/yyyy or dd-mm-yyyy
+        r'(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4})',  # single or double-digit day/month
+        r'(\d{4}[\/\-]\d{2}[\/\-]\d{2})',  # yyyy/mm/dd or yyyy-mm-dd
+        r'(\d{2}[\/\-]\d{4})',  # mm/yyyy
+        r'(\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{4})',  # MMM YYYY (e.g., Jan 2024)
+        r'(\d{2}[ ](?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[ ]\d{4})',
+        # dd MMM yyyy (e.g., 14 Jan 2024)
+        r'(\d{1,2}[\/\-]\d{4})'  # Handle cases like 1/2020
+    ]
+
+    dates = {'manufacture': None, 'expiry': None}
+
+    # Go line by line to detect keywords and associate dates
+    lines = text.split("\n")
+    for line in lines:
+        line_lower = line.lower()
+
+        # Look for manufacture and expiry keywords in the current line
+        manufacture_found = any(keyword in line_lower for keyword in manufacture_keywords)
+        expiry_found = any(keyword in line_lower for keyword in expiry_keywords)
+
+        # If keywords are found, look for dates in the same line
+        for pattern in date_patterns:
+            matches = re.findall(pattern, line_lower)
+            for match in matches:
+                try:
+                    date_obj = dateparser.parse(match, dayfirst=True)  # Ensure dayfirst for dd/mm/yyyy formats
+                    if manufacture_found:
+                        dates['manufacture'] = date_obj
+                        print(f"Manufacture date found: {date_obj}")  # Debug print
+                    elif expiry_found:
+                        dates['expiry'] = date_obj
+                        print(f"Expiry date found: {date_obj}")  # Debug print
+                except ValueError:
+                    continue
+
+    if dates['manufacture'] or dates['expiry']:
+        return dates
+    return None
+
+
+# Function to calculate the shelf life based on detected manufacture and expiry dates
+def calculate_shelf_life(dates_info):
+    current_date = datetime.now()
+    manufacture_date = dates_info.get('manufacture')
+    expiry_date = dates_info.get('expiry')
+    status = ''
+    remaining_shelf_life = None
+
+    # Case 1: Both manufacture and expiry dates are available
+    if manufacture_date and expiry_date:
+        if expiry_date < current_date:
+            status = "Expired"
+        else:
+            total_shelf_life = expiry_date - manufacture_date
+            remaining_shelf_life = expiry_date - current_date
+            status = f"Valid | {remaining_shelf_life.days} days left out of {total_shelf_life.days} days"
+
+    # Case 2: Only expiry date is available
+    elif expiry_date:
+        if expiry_date < current_date:
+            status = "Expired"
+        else:
+            remaining_shelf_life = expiry_date - current_date
+            status = f"Valid | {remaining_shelf_life.days} days left"
+
+    # Case 3: Only manufacture date is available
+    elif manufacture_date:
+        status = f"Manufactured on {manufacture_date.strftime('%Y-%m-%d')}"
+
+    # Case 4: No dates found
+    else:
+        status = "Date information not found"
+
+    return status, remaining_shelf_life
+
+
+# Function to display product status
+def display_product_status(products_with_dates):
+    for i, (product, dates_info) in enumerate(products_with_dates):
+        status, remaining_shelf_life = calculate_shelf_life(dates_info)
+        print(f"Product: {product} | Status: {status}")
+
+
+# Main function to process an image
+def process_image_expiry_detection(image_path):
+    products_with_dates = process_image(image_path)
+
+    if not products_with_dates:
+        print("No products with dates detected.")
+    else:
+        display_product_status(products_with_dates)
+
+
+# Example usage
+image_path = r"image-path"
+process_image_expiry_detection(image_path)
