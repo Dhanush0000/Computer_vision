@@ -6,10 +6,11 @@ body {
 }
 
 header {
-    background-color: #F8E831; /* Banana Yellow */
-    color: #fff;
+    background-color: #fff; /* White background */
     padding: 1em;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 nav ul {
@@ -17,7 +18,7 @@ nav ul {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 nav li {
@@ -25,33 +26,12 @@ nav li {
 }
 
 nav a {
-    color: #fff;
+    color: #333;
     text-decoration: none;
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2em;
-}
-
-section {
-    background-color: #047BD5; /* True Blue */
-    padding: 1em;
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#scan-button {
-    background-color: #047BD5; /* True Blue */
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#scan-button:hover {
-    background-color: #F8E831; /* Banana Yellow */
+nav img {
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
 }
