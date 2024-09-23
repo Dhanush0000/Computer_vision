@@ -18,7 +18,8 @@ nav ul {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
 }
 
 nav li {
@@ -34,4 +35,14 @@ nav img {
     width: 40px;
     height: 40px;
     margin-right: 20px;
+}
+
+.right-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.right-buttons a {
+    margin-right: 10px;
 }
