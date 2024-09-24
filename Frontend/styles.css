@@ -8,11 +8,34 @@ body {
 
 .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 20px;
     background-color: #007ACC;
     color: #FFFFFF;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Remove underline on hover */
+}
+
+.logo-img {
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 10px; /* Adjust spacing between logo and text */
+    color: white;
+}
+
+.logo-img:hover {
+    transform: scale(1.05); /* Slight scale up on hover */
 }
 
 .navigation {
@@ -22,15 +45,19 @@ body {
 
 .nav-button {
     background-color: transparent;
-    border: none;
-    padding: 10px 15px;
+    padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 25px; /* Rounded corners */
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    color: white;
 }
 
 .nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: white;
+    transform: scale(1.1); /* Scale up slightly when hovered */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+    color: #007ACC;
 }
 
 .active {
@@ -48,14 +75,19 @@ body {
 }
 
 button {
-    background-color: #FFFFFF;
+    background-color: #007ACC;
+    color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px; /* Smooth edges */
 }
 
 button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #005f99; /* Darkens on hover */
+    transform: scale(1.05); /* Slight scale up when hovered */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+    color: white;
 }
