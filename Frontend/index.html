@@ -5,33 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flipkart Smart Vision</title>
     <link rel="icon" href="OIG1 (1).png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="header">
-        <!-- Combine logo and text within a single container to eliminate space -->
-        <a href="#" id="logoLink" class="logo-container">
-            <img src="OIG1 (1).png" alt="Logo" class="logo-img">
-            <span class="logo-text">Flipkart Smart Vision</span>
-        </a>
-        <nav class="navigation">
-            <button class="nav-button active" id="homeBtn">Home</button>
-            <button class="nav-button" id="scanBtn">Scan</button>
-            <button class="nav-button" id="inventoryBtn">Inventory</button>
-            <button class="nav-button" id="reportsBtn">Reports</button>
-            <button class="nav-button" id="settingsBtn">Settings</button>
-        </nav>
-    </header>
+    <div class="container">
+        <!-- Sidebar navigation on the left -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="OIG1 (1).png" alt="Logo" class="logo-img">
+                <span class="logo-text">Flipkart Smart Vision</span>
+            </div>
+            <nav class="navigation">
+                <button class="nav-button active" id="homeBtn">Home</button>
+                <button class="nav-button" id="scanBtn">Scan</button>
+                <button class="nav-button" id="inventoryBtn">Inventory</button>
+                <button class="nav-button" id="reportsBtn">Reports</button>
+                <button class="nav-button" id="settingsBtn">Settings</button>
+            </nav>
+        </aside>
 
-    <main class="content">
-        <h2>Welcome to Flipkart Smart Vision</h2>
-        <p>Scan quickly and efficiently.</p>
-        <div class="scan-options">
-            <button id="scanFruitsBtn">Scan Fruits/Vegetables</button>
-            <button id="scanProductsBtn">Scan Products</button>
-        </div>
-    </main>
+        <!-- Main content area -->
+        <main class="content">
+            <h2>Welcome to Flipkart Smart Vision</h2>
+            <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
+
+            <!-- Overview Section -->
+            <section class="overview">
+                <h3>What is Flipkart Smart Vision?</h3>
+                <p>Flipkart Smart Vision is a cutting-edge solution designed to streamline product scanning, inventory management, and report generation. With quick and accurate scans, real-time data updates, and detailed reports, it's built to improve your efficiency.</p>
+            </section>
+
+            <!-- Feature Cards Section -->
+            <section class="features">
+                <div class="feature-card">
+                    <h4>Quick Scan</h4>
+                    <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Real-Time Inventory</h4>
+                    <p>Track and manage your inventory in real time with automated updates.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Generate Reports</h4>
+                    <p>Get detailed reports about products and inventory with just a few clicks.</p>
+                </div>
+            </section>
+
+            <!-- Call-to-Action Buttons -->
+            <div class="scan-options">
+                <button id="scanFruitsBtn">Scan Fruits/Vegetables</button>
+                <button id="scanProductsBtn">Scan Products</button>
+            </div>
+        </main>
 
     <script src="script.js"></script>
+    </div>
 </body>
 </html>
