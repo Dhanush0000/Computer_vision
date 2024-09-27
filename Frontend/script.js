@@ -40,14 +40,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="feature-card">
                     <h4>Quick Scan</h4>
                     <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
+                    <div class="extra-info">
+                        <p>Quick Scan allows you to instantly recognize products and fruits/vegetables using image recognition and OCR technology.</p>
+                        <button class="learn-more-btn">Learn More</button>
+                    </div>
                 </div>
                 <div class="feature-card">
                     <h4>Real-Time Inventory</h4>
                     <p>Track and manage your inventory in real time with automated updates.</p>
+                    <div class="extra-info">
+                        <p>Keep track of inventory with automatic updates in real time, reducing manual errors and delays in the supply chain.</p>
+                        <button class="learn-more-btn">Learn More</button>
+                    </div>
                 </div>
                 <div class="feature-card">
                     <h4>Generate Reports</h4>
                     <p>Get detailed reports about products and inventory with just a few clicks.</p>
+                    <div class="extra-info">
+                        <p>Generate custom reports for your products, sales, and inventory in real-time, helping you make data-driven decisions.</p>
+                        <button class="learn-more-btn">Learn More</button>
+                    </div>
                 </div>
             </section>
 

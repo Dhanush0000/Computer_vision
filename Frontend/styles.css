@@ -119,13 +119,13 @@ p {
     width: 30%;
     text-align: center;
     box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    transform-style: preserve-3d;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    position: relative;
 }
 
 .feature-card:hover {
-    transform: rotateY(15deg) translateZ(20px);
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+    background-color: #FFF8E1; /* Light Flipkart yellow on hover */
 }
 
 .feature-card h4 {
@@ -137,6 +137,32 @@ p {
 .feature-card p {
     font-size: 14px;
     color: #555;
+}
+
+/* Extra Information in Feature Cards */
+.extra-info {
+    display: none;
+    padding-top: 10px;
+}
+
+.feature-card:hover .extra-info {
+    display: block;
+}
+
+.learn-more-btn {
+    margin-top: 10px;
+    background-color: #007ACC;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.learn-more-btn:hover {
+    background-color: #FFC107;
+    color: #007ACC;
 }
 
 /* Buttons for Scan Options */
