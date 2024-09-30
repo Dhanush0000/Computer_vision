@@ -1,77 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flipkart Smart Vision</title>
     <link rel="icon" href="OIG1 (1).png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar navigation on the left -->
-        <aside class="sidebar">
-            <div class="logo-container">
-                <img src="OIG1 (1).png" alt="Logo" class="logo-img">
-                <span class="logo-text">Flipkart Smart Vision</span>
-            </div>
-            <nav class="navigation">
-                <button class="nav-button active" id="homeBtn">Home</button>
-                <button class="nav-button" id="scanBtn">Scan</button>
-                <button class="nav-button" id="inventoryBtn">Inventory</button>
-                <button class="nav-button" id="reportsBtn">Reports</button>
-                <button class="nav-button" id="settingsBtn">Settings</button>
-            </nav>
-        </aside>
+    <header class="header">
+        <div class="logo-container">
+            <img src="OIG1 (1).png" alt="Logo" class="logo-img">
+            <span class="logo-text">Flipkart Smart Vision</span>
+        </div>
+        <nav class="navigation">
+            <button class="nav-button active" id="homeBtn">Home</button>
+            <button class="nav-button" id="scanBtn">Scan</button>
+            <button class="nav-button" id="inventoryBtn">Inventory</button>
+            <button class="nav-button" id="reportsBtn">Reports</button>
+            <button class="nav-button" id="aiBtn">AI</button> <!-- AI button added before Settings -->
+            <button class="nav-button" id="settingsBtn">Settings</button>
+        </nav>
+    </header>
 
-        <!-- Main content area -->
-        <main class="content">
-            <h2>Welcome to Flipkart Smart Vision</h2>
-            <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
+    <!-- Main content area -->
+    <main class="content">
+        <h2>Welcome to Flipkart Smart Vision</h2>
+        <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
 
-            <!-- Overview Section -->
-            <section class="overview">
-                <h3>What is Flipkart Smart Vision?</h3>
-                <p>Flipkart Smart Vision is a cutting-edge solution designed to streamline product scanning, inventory management, and report generation. With quick and accurate scans, real-time data updates, and detailed reports, it's built to improve your efficiency.</p>
-            </section>
+        <!-- Overview Section -->
+        <section class="overview">
+            <h3>What is Flipkart Smart Vision?</h3>
+            <p>Flipkart Smart Vision is a cutting-edge solution designed to streamline product scanning, inventory management, and report generation. With quick and accurate scans, real-time data updates, and detailed reports, it's built to improve your efficiency.</p>
+        </section>
 
-            <!-- Feature Cards Section -->
-            <section class="features">
+        <!-- Feature Cards Section -->
+        <section class="features">
+            <div class="card-container">
                 <div class="feature-card">
                     <h4>Quick Scan</h4>
-                    <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
-                    <div class="extra-info">
-                        <p>Quick Scan allows you to instantly recognize products and fruits/vegetables using image recognition and OCR technology.</p>
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
+                    <p>Instantly scan fruits, vegetables, and products.</p>
                 </div>
+            </div>
+            <div class="card-container">
                 <div class="feature-card">
                     <h4>Real-Time Inventory</h4>
-                    <p>Track and manage your inventory in real time with automated updates.</p>
-                    <div class="extra-info">
-                        <p>Keep track of inventory with automatic updates in real time, reducing manual errors and delays in the supply chain.</p>
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
+                    <p>Track your inventory in real time.</p>
                 </div>
+            </div>
+            <div class="card-container">
                 <div class="feature-card">
                     <h4>Generate Reports</h4>
-                    <p>Get detailed reports about products and inventory with just a few clicks.</p>
-                    <div class="extra-info">
-                        <p>Generate custom reports for your products, sales, and inventory in real-time, helping you make data-driven decisions.</p>
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
+                    <p>Generate detailed reports with ease.</p>
                 </div>
-            </section>
-
-            <!-- Call-to-Action Buttons -->
-            <div class="scan-options">
-                <button id="scanFruitsBtn">Scan Fruits/Vegetables</button>
-                <button id="scanProductsBtn">Scan Products</button>
             </div>
-        </main>
+            <div class="card-container">
+                <div class="feature-card">
+                    <h4>AI-Powered Analytics</h4>
+                    <p>Advanced AI and database integration.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buttons for Scanning Options -->
+        <div class="scan-options">
+            <button id="scanFruitsBtn" class="web-button">Scan Fruits/Vegetables</button>
+            <button id="scanProductsBtn" class="web-button">Scan Products</button>
+        </div>
+    </main>
 
     <script src="script.js"></script>
-    </div>
 </body>
 </html>
