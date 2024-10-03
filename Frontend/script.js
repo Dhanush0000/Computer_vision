@@ -40,35 +40,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="feature-card">
                     <h4>Quick Scan</h4>
                     <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
-                    <div class="extra-info">
-                        <p>Quick Scan allows you to instantly recognize products and fruits/vegetables using image recognition and OCR technology.</p>
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
                 </div>
                 <div class="feature-card">
                     <h4>Real-Time Inventory</h4>
                     <p>Track and manage your inventory in real time with automated updates.</p>
-                    <div class="extra-info">
-                        <p>Keep track of inventory with automatic updates in real time, reducing manual errors and delays in the supply chain.</p>
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
                 </div>
                 <div class="feature-card">
                     <h4>Generate Reports</h4>
                     <p>Get detailed reports about products and inventory with just a few clicks.</p>
-                    <div class="extra-info">
-                        <p>Generate custom reports for your products, sales, and inventory in real-time, helping you make data-driven decisions.</p>
-                        <button class="learn-more-btn">Learn More</button>
-                    </div>
+                </div>
+                <div class="feature-card">
+                    <h4>AI-Powered Analytics</h4>
+                    <p>Use AI to analyze and predict trends in inventory and sales.</p>
                 </div>
             </section>
 
             <div class="scan-options">
-                <button id="scanFruitsBtn">Scan Fruits/Vegetables</button>
-                <button id="scanProductsBtn">Scan Products</button>
+                <button id="scanFruitsBtn" class="web-button">Scan Fruits/Vegetables</button>
+                <button id="scanProductsBtn" class="web-button">Scan Products</button>
             </div>
         `;
         attachScanListeners(); // Attach listeners after dynamic content is loaded
+    }
+
+    function loadScanContent() {
+        mainContent.innerHTML = `
+            <h2>Scan</h2>
+            <p>Use this feature to scan fresh produce or packaged products using advanced image recognition technology.</p>
+            <div class="scan-options">
+                <button class="web-button">Scan Fresh Produce</button>
+                <button class="web-button">Scan Packaged Products</button>
+            </div>
+        `;
+    }
+
+    function loadInventoryContent() {
+        mainContent.innerHTML = `
+            <h2>Inventory</h2>
+            <p>Track your products in real-time and manage stock efficiently.</p>
+            <button class="web-button">Check Inventory</button>
+        `;
+    }
+
+    function loadReportsContent() {
+        mainContent.innerHTML = `
+            <h2>Reports</h2>
+            <p>Generate custom reports on your products, sales, and inventory trends.</p>
+            <button class="web-button">Generate Report</button>
+        `;
+    }
+
+    function loadAIContent() {
+        mainContent.innerHTML = `
+            <h2>AI-Powered Analytics</h2>
+            <p>Using advanced AI and machine learning algorithms, you can predict trends, manage inventory more effectively, and gain insights from data-driven reports.</p>
+        `;
+    }
+
+    function loadSettingsContent() {
+        mainContent.innerHTML = `
+            <h2>Settings</h2>
+            <p>Configure system settings such as notification preferences and scan intervals.</p>
+            <button class="web-button">Change Settings</button>
+        `;
     }
 
     navButtons.forEach(button => {
@@ -79,16 +113,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadHomeContent();
                     break;
                 case 'scanBtn':
-                    mainContent.innerHTML = '<p>Scanning page...</p>';
+                    loadScanContent();
                     break;
                 case 'inventoryBtn':
-                    mainContent.innerHTML = '<p>Inventory page...</p>';
+                    loadInventoryContent();
                     break;
                 case 'reportsBtn':
-                    mainContent.innerHTML = '<p>Reports page...</p>';
+                    loadReportsContent();
+                    break;
+                case 'aiBtn':
+                    loadAIContent();
                     break;
                 case 'settingsBtn':
-                    mainContent.innerHTML = '<p>Settings page...</p>';
+                    loadSettingsContent();
                     break;
             }
         });
