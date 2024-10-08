@@ -2,40 +2,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-button');
     const mainContent = document.querySelector('.content');
 
+    // Get all feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+
+    // Function to highlight the active navigation button
     function setActiveButton(button) {
         navButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
     }
 
-    function attachScanListeners() {
-        const scanFruitsBtn = document.getElementById('scanFruitsBtn');
-        const scanProductsBtn = document.getElementById('scanProductsBtn');
-
-        if (scanFruitsBtn) {
-            scanFruitsBtn.addEventListener('click', () => {
-                mainContent.innerHTML = `<p>Fruit/Vegetable scanning initiated...</p>`;
-            });
-        }
-
-        if (scanProductsBtn) {
-            scanProductsBtn.addEventListener('click', () => {
-                mainContent.innerHTML = `<p>Product scanning initiated...</p>`;
-            });
-        }
-    }
-
+    // Load content for each section
     function loadHomeContent() {
         mainContent.innerHTML = `
             <h2>Welcome to Flipkart Smart Vision</h2>
             <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
 
-            <!-- Overview Section -->
             <section class="overview">
                 <h3>What is Flipkart Smart Vision?</h3>
                 <p>Flipkart Smart Vision is a cutting-edge solution designed to streamline product scanning, inventory management, and report generation. With quick and accurate scans, real-time data updates, and detailed reports, it's built to improve your efficiency.</p>
             </section>
 
-            <!-- Feature Cards Section -->
             <section class="features">
                 <div class="feature-card">
                     <h4>Quick Scan</h4>
@@ -60,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button id="scanProductsBtn" class="web-button">Scan Products</button>
             </div>
         `;
-        attachScanListeners(); // Attach listeners after dynamic content is loaded
+        attachScanListeners(); // Attach listeners for dynamic content
     }
 
     function loadScanContent() {
@@ -105,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
+    // Attach navigation button click events
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
             setActiveButton(button);
@@ -131,6 +118,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initially load the home content
+    // Attach click events to the feature cards
+    featureCards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+            setActiveButton(navButtons[index + 1]); // Match feature card to the corresponding nav button
+            switch (index) {
+                case 0:
+                    loadScanContent();
+                    break;
+                case 1:
+                    loadInventoryContent();
+                    break;
+                case 2:
+                    loadReportsContent();
+                    break;
+                case 3:
+                    loadAIContent();
+                    break;
+            }
+        });
+    });
+
+    // Function to handle scan button click listeners
+    function attachScanListeners() {
+        const scanFruitsBtn = document.getElementById('scanFruitsBtn');
+        const scanProductsBtn = document.getElementById('scanProductsBtn');
+
+        if (scanFruitsBtn) {
+            scanFruitsBtn.addEventListener('click', () => {
+                mainContent.innerHTML = `<p>Fruit/Vegetable scanning initiated...</p>`;
+            });
+        }
+
+        if (scanProductsBtn) {
+            scanProductsBtn.addEventListener('click', () => {
+                mainContent.innerHTML = `<p>Product scanning initiated...</p>`;
+            });
+        }
+    }
+
+    // Load the home content initially
     loadHomeContent();
 });
