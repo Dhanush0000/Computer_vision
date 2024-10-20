@@ -9,7 +9,6 @@ import numpy as np
 import base64
 import io
 from tensorflow.keras.models import load_model
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -45,6 +44,11 @@ preprocess_torch = transforms.Compose([
 # Preprocessing for images (Keras model)
 preprocess_keras = lambda img: np.expand_dims(cv2.resize(img, (224, 224)) / 255.0, axis=0)
 
+# Helper function to save results to a text file
+def save_results_to_file(scan_type, predicted_class, confidence_score):
+    with open('results.txt', 'a') as file:
+        file.write(f'{scan_type} - Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}\n')
+
 # Prediction function for PyTorch (ResNet, 20-class model)
 def predict_class_torch(image, model, class_names):
     image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -66,12 +70,6 @@ def predict_class_keras(image, model, class_names):
     confidence_score = np.max(predictions)
     return predicted_class, confidence_score
 
-# Helper function to save results to a file
-def save_results_to_file(predicted_class, confidence_score):
-    with open('results.txt', 'a') as f:
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        f.write(f"{timestamp} - Class: {predicted_class}, Confidence: {confidence_score:.2f}\n")
-
 # Route to the homepage
 @app.route('/')
 def index():
@@ -86,9 +84,9 @@ def scan_fruits_veggies():
     # Predict using the 20-class model (PyTorch)
     predicted_class, confidence_score = predict_class_torch(image, resnet_model, class_names_20)
     
-    # Save results to results.txt
-    save_results_to_file(predicted_class, confidence_score)
-
+    # Save results to the text file
+    save_results_to_file("Fruits/Veggies", predicted_class, confidence_score)
+    
     return jsonify({"message": f"Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}"})
 
 # Route to handle scanning packaged products (7-class model, Keras)
@@ -99,13 +97,12 @@ def scan_packaged_products():
 
     # Predict using the 7-class model (Keras)
     predicted_class, confidence_score = predict_class_keras(image, efficientnet_model, class_names_7)
-
-    # Save results to results.txt
-    save_results_to_file(predicted_class, confidence_score)
-
+    
+    # Save results to the text file
+    save_results_to_file("Packaged Products", predicted_class, confidence_score)
+    
     return jsonify({"message": f"Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}"})
 
-# Function to process the base64-encoded image data sent from the camera feed
 def process_base64_image(base64_image):
     img_data = base64.b64decode(base64_image.split(",")[1])
     image = Image.open(io.BytesIO(img_data))
