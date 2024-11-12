@@ -1,16 +1,19 @@
 from flask import Flask, render_template, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
 import cv2
 from PIL import Image
-import os
 import numpy as np
 import base64
 import io
-from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///grocery_scanner.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 # Device configuration for PyTorch (for ResNet model)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -24,14 +27,29 @@ class_names_7 = ['Dairy and Eggs', 'HouseHold Care', 'Kitchen_products', 'Packag
                  'Snack and Beverages', 'Staples']
 
 # Load the 20-class ResNet model (PyTorch)
-resnet_model = models.resnet101(weights=None)
-resnet_model.fc = nn.Linear(resnet_model.fc.in_features, len(class_names_20))
-resnet_model.load_state_dict(torch.load('resnet101_trained.pth', map_location=device))
-resnet_model = resnet_model.to(device)
-resnet_model.eval()
+resnet_model_20 = models.resnet101(weights=None)
+resnet_model_20.fc = nn.Linear(resnet_model_20.fc.in_features, len(class_names_20))
+resnet_model_20.load_state_dict(torch.load('resnet101_trained.pth', map_location=device, weights_only=True))
+resnet_model_20 = resnet_model_20.to(device)
+resnet_model_20.eval()
 
-# Load the 7-class EfficientNet model (Keras/TensorFlow)
-efficientnet_model = load_model('efficientnet_finetuned_model_grocery2.keras')
+# Load the 7-class ResNet model (PyTorch)
+resnet_model_7 = models.resnet101(weights=None)
+resnet_model_7.fc = nn.Linear(resnet_model_7.fc.in_features, len(class_names_7))
+resnet_model_7.load_state_dict(torch.load('resnet101_trained_gro.pth', map_location=device, weights_only=True))
+resnet_model_7 = resnet_model_7.to(device)
+resnet_model_7.eval()
+
+# Database models
+class ScanResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    item_name = db.Column(db.String(100), nullable=False)
+    freshness = db.Column(db.String(50), nullable=False)  # "fresh" or "rotten"
+    category = db.Column(db.String(50), nullable=True)    # "fruit", "vegetable", etc.
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
 
 # Preprocessing for images (PyTorch model)
 preprocess_torch = transforms.Compose([
@@ -41,13 +59,15 @@ preprocess_torch = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-# Preprocessing for images (Keras model)
-preprocess_keras = lambda img: np.expand_dims(cv2.resize(img, (224, 224)) / 255.0, axis=0)
-
-# Helper function to save results to a text file
-def save_results_to_file(scan_type, predicted_class, confidence_score):
-    with open('results.txt', 'a') as file:
-        file.write(f'{scan_type} - Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}\n')
+# Helper function to save results to database
+def save_results_to_db(scan_type, predicted_class, confidence_score):
+    new_scan = ScanResult(
+        item_name=predicted_class,
+        freshness="fresh" if "Fresh" in predicted_class else "rotten",
+        category=scan_type
+    )
+    db.session.add(new_scan)
+    db.session.commit()
 
 # Prediction function for PyTorch (ResNet, 20-class model)
 def predict_class_torch(image, model, class_names):
@@ -61,14 +81,11 @@ def predict_class_torch(image, model, class_names):
         confidence_score = confidence[0].item()
     return predicted_class, confidence_score
 
-# Prediction function for Keras (EfficientNet, 7-class model)
-def predict_class_keras(image, model, class_names):
-    image = preprocess_keras(image)
-    predictions = model.predict(image)
-    predicted_class_index = np.argmax(predictions)
-    predicted_class = class_names[predicted_class_index]
-    confidence_score = np.max(predictions)
-    return predicted_class, confidence_score
+# Helper function to process Base64 image
+def process_base64_image(base64_image):
+    img_data = base64.b64decode(base64_image.split(",")[1])
+    image = Image.open(io.BytesIO(img_data))
+    return np.array(image)
 
 # Route to the homepage
 @app.route('/')
@@ -82,31 +99,33 @@ def scan_fruits_veggies():
     image = process_base64_image(data)
 
     # Predict using the 20-class model (PyTorch)
-    predicted_class, confidence_score = predict_class_torch(image, resnet_model, class_names_20)
-    
-    # Save results to the text file
-    save_results_to_file("Fruits/Veggies", predicted_class, confidence_score)
-    
+    predicted_class, confidence_score = predict_class_torch(image, resnet_model_20, class_names_20)
+
+    # Save results to the database
+    save_results_to_db("Fruits/Veggies", predicted_class, confidence_score)
+
     return jsonify({"message": f"Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}"})
 
-# Route to handle scanning packaged products (7-class model, Keras)
+# Route to handle scanning packaged products (7-class model, PyTorch)
 @app.route('/scan_packaged_products', methods=['POST'])
 def scan_packaged_products():
-    data = request.json.get("imageData")
-    image = process_base64_image(data)
+    try:
+        data = request.json.get("imageData")
+        image = process_base64_image(data)
 
-    # Predict using the 7-class model (Keras)
-    predicted_class, confidence_score = predict_class_keras(image, efficientnet_model, class_names_7)
-    
-    # Save results to the text file
-    save_results_to_file("Packaged Products", predicted_class, confidence_score)
-    
-    return jsonify({"message": f"Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}"})
+        # Predict using the 7-class model (PyTorch)
+        predicted_class, confidence_score = predict_class_torch(image, resnet_model_7, class_names_7)
 
-def process_base64_image(base64_image):
-    img_data = base64.b64decode(base64_image.split(",")[1])
-    image = Image.open(io.BytesIO(img_data))
-    return np.array(image)
+        # Save results to the database
+        save_results_to_db("Packaged Products", predicted_class, confidence_score)
+
+        return jsonify({"message": f"Predicted Class: {predicted_class}, Confidence: {confidence_score:.2f}"})
+
+    except Exception as e:
+        print(f"Error in scan_packaged_products: {e}")
+        return jsonify({"message": "Scan failed"}), 500
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
