@@ -304,4 +304,16 @@
 
         closeCameraModal();
     });
+    
+    function toBase64(blob, callback) {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            callback(reader.result);
+        }
+        reader.readAsDataURL(blob);
+    }
+</script>
+
+</body>
+</html>
 
