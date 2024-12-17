@@ -74,6 +74,8 @@ mkdir static
 
 Inside static, you can create css and js subfolders if needed.
 
+It's only a if situation, index.html file has both css and js inline
+
 ### Save Your Model
 
 Create a modules folder where you’ll save your trained model:
