@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flipkart Smart Vision</title>
+    <title>Smart Vision</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <style>
@@ -16,32 +16,50 @@
             background: linear-gradient(to right, #f1f5f8, #ffffff);
         }
 
-        /* Navbar Styling */
-        .navbar {
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            padding: 15px 20px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #007ACC;
+            color: #ffffff;
         }
 
-        .navbar-brand {
-            color: white;
-            font-size: 26px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 24px;
             font-weight: bold;
-        }
-
-        .navbar a {
             color: white;
-            font-size: 18px;
-            margin-left: 15px;
-            text-decoration: none;
-            transition: color 0.3s;
         }
 
-        .navbar a:hover {
+        .navigation {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-button {
+            background-color: transparent;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            color: white;
+            border-radius: 25px;
+        }
+
+        .nav-button.active {
+            background-color: #0056b3;
+        }
+
+        .nav-button:hover {
             color: #ffcc00;
         }
 
-        /* Main Section Styling */
         .main-section {
             text-align: center;
             padding: 60px 20px;
@@ -65,8 +83,6 @@
             color: #555;
             margin-bottom: 50px;
         }
-
-        /* Features Section Styling */
         .features {
             display: flex;
             flex-wrap: wrap;
@@ -100,45 +116,6 @@
             color: #666;
         }
 
-        /* Scan Button Styling */
-        .scan-buttons {
-            margin-top: 40px;
-        }
-
-        .scan-buttons button {
-            padding: 15px 35px;
-            font-size: 20px;
-            margin: 0 15px;
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .scan-buttons button:hover {
-            transform: translateY(-5px) scale(1.05);
-            background: #0056b3;
-        }
-
-        .scan-result {
-            margin-top: 20px;
-        }
-
-        /* Footer Styling */
-        footer {
-            background-color: #0056b3;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            font-size: 14px;
-        }
-
-        /* Modal Styling */
         .modal {
             display: none;
             position: fixed;
@@ -159,87 +136,111 @@
             opacity: 1;
         }
 
-        .modal-dialog {
-            max-width: 600px;
+        .modal-content {
+            position: relative;
+            background-color: white;
             margin: auto;
-            transform: scale(0.9);
-            transition: transform 0.3s ease-in-out;
+            padding: 20px;
+            width: 80%;
+            border-radius: 15px;
+            text-align: center;
         }
 
-        .modal.show .modal-dialog {
-            transform: scale(1);
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
         }
+        .scan-result h2 {
+            font-size: 42px;
+            color: #0056b3;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.15);
+        }
+        footer {
+            background-color: #0056b3;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 14px;
+        }
+        .scan-page-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80vh;
+        text-align: center;
+    }
+
+    .scan-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        margin-top: 5px;
+    }
+
+    /* Smaller video feed in camera modal */
+    #videoFeed {
+        width: 320px;
+        height: 240px;
+        border: 2px solid #007ACC;
+        border-radius: 8px;
+        margin: auto;
+    }
+
+    
     </style>
 </head>
 
 <body>
 
-<nav class="navbar">
-    <a class="navbar-brand" href="#">Flipkart Smart Vision</a>
-    <a href="#">Home</a>
-    <a href="#">Scan</a>
-    <a href="#">Inventory</a>
-    <a href="#">Reports</a>
-    <a href="#">AI</a>
-    <a href="#">Settings</a>
-</nav>
-
-<div class="main-section" data-aos="fade-up">
-    <h1>Welcome to Flipkart Smart Vision</h1>
-    <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
-
-    <div class="features">
-        <div class="feature-item" data-aos="fade-right">
-            <h5>Quick Scan</h5>
-            <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
-        </div>
-        <div class="feature-item" data-aos="fade-left">
-            <h5>Real-Time Inventory</h5>
-            <p>Track and manage your inventory in real-time with automated updates.</p>
-        </div>
-        <div class="feature-item" data-aos="fade-right">
-            <h5>Generate Reports</h5>
-            <p>Get detailed reports about products and inventory with just a few clicks.</p>
-        </div>
-        <div class="feature-item" data-aos="fade-left">
-            <h5>AI-Powered Analytics</h5>
-            <p>Use AI to analyze and predict trends in inventory and sales.</p>
-        </div>
+<header class="header">
+    <div class="logo-container">
+        <span class="logo-text">Smart Vision</span>
     </div>
+    <nav class="navigation">
+        <button class="nav-button active" id="homeBtn">Home</button>
+        <button class="nav-button" id="scanBtn">Scan</button>
+        <button class="nav-button" id="inventoryBtn">Inventory</button>
+    </nav>
+</header>
 
-    <div class="scan-buttons" data-aos="fade-up">
-        <button class="btn btn-primary" id="scanFruitsVeggies">Scan Fruits/Vegetables</button>
-        <button class="btn btn-primary" id="scanPackagedProducts">Scan Packaged Products</button>
+<div class="content">
+    <div class="main-section" data-aos="fade-up">
+        <h1>Welcome to Smart Vision</h1>
+        <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
+        <div class="features">
+            <div class="feature-item" data-aos="fade-right">
+                <h5>Quick Scan</h5>
+                <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
+            </div>
+            <div class="feature-item" data-aos="fade-left">
+                <h5>Real-Time Inventory</h5>
+                <p>Track and manage your inventory in real-time with automated updates.</p>
+            </div>
+            </div>
     </div>
+</div>
 
-    <div class="scan-result" data-aos="fade-up">
-        <h4>Scan Result:</h4>
-        <p id="scanResult">No scan performed yet.</p>
+<!-- Modal for Camera -->
+<div id="cameraModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <video id="videoFeed" autoplay></video>
+        <button id="captureImage" class="btn btn-primary mt-3">Capture Image</button>
     </div>
 </div>
 
 <footer>
-    © 2024 Flipkart Smart Vision. All rights reserved.
+    © 2024 ADG Smart Vision. All rights reserved.
 </footer>
-
-<div class="modal" id="cameraModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Camera Feed</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <video id="videoFeed" autoplay></video>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="captureImage">Capture and Scan</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
@@ -248,18 +249,66 @@
 <script>
     AOS.init();
 
-    // Camera Modal Functionality
-    document.getElementById("scanFruitsVeggies").addEventListener("click", function () {
-        openCameraModal('fruitsVeggies');
-    });
-
-    document.getElementById("scanPackagedProducts").addEventListener("click", function () {
-        openCameraModal('packagedProducts');
-    });
-
+    const navButtons = document.querySelectorAll('.nav-button');
+    const contentDiv = document.querySelector('.content');
     const videoElement = document.getElementById("videoFeed");
     const cameraModal = document.getElementById("cameraModal");
     let currentScanType = '';
+
+    function setActiveButton(button) {
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    }
+
+    function loadHomeContent() {
+        contentDiv.innerHTML = `
+            <div class="main-section" data-aos="fade-up">
+                <h1>Welcome to Smart Vision</h1>
+                <p>Scan products and manage inventory with ease using the power of smart vision technology.</p>
+                <div class="features">
+            <div class="feature-item" data-aos="fade-right">
+                <h5>Quick Scan</h5>
+                <p>Scan fruits, vegetables, and products effortlessly with advanced image recognition.</p>
+            </div>
+            <div class="feature-item" data-aos="fade-left">
+                <h5>Real-Time Inventory</h5>
+                <p>Track and manage your inventory in real-time with automated updates.</p>
+            </div>
+            </div>
+            </div>
+        `;
+    }
+
+    function loadScanContent() {
+        contentDiv.innerHTML = `
+            <div class="main-section">
+            <div class="scan-page-content" data-aos="fade-up">
+            <h1>Scan</h1>
+            <p>Select a category to start scanning:</p>
+            <p>You can choose to scan a produce or Grocery</p>
+            <div class="scan-buttons" data-aos="fade-up">
+                <button class="btn btn-primary" onclick="openCameraModal('fruitsVeggies')">Scan Fruits/Vegetables</button>
+                <button class="btn btn-primary" onclick="openCameraModal('packagedProducts')">Scan Packaged Products</button>
+            </div>
+            <br></br>
+            <div class="scan-result" data-aos="fade-up">
+                <h2>Scan Result:</h2>
+                <p id="scanResult">No scan performed yet.</p>
+            </div>
+            </div>
+            </div>
+        `;
+    }
+
+    function loadInventoryContent() {
+        contentDiv.innerHTML = `
+        <div class="main-section">
+            <h1>Inventory</h1>
+            <p>Track your inventory.</p>
+            <button id="downloadDb">Download Database</button>
+        </div>
+        `;
+    }
 
     function openCameraModal(scanType) {
         currentScanType = scanType;
@@ -280,13 +329,12 @@
         videoElement.srcObject.getTracks().forEach(track => track.stop());
     }
 
-    // Capture image and send to the server for scanning
     document.getElementById("captureImage").addEventListener("click", function () {
         const canvas = document.createElement("canvas");
         canvas.width = videoElement.videoWidth;
         canvas.height = videoElement.videoHeight;
         canvas.getContext("2d").drawImage(videoElement, 0, 0);
-        
+
         canvas.toBlob(blob => {
             toBase64(blob, (imageData) => {
                 let url = currentScanType === 'fruitsVeggies' ? '/scan_fruits_veggies' : '/scan_packaged_products';
@@ -304,7 +352,7 @@
 
         closeCameraModal();
     });
-    
+
     function toBase64(blob, callback) {
         const reader = new FileReader();
         reader.onloadend = function () {
@@ -312,8 +360,40 @@
         }
         reader.readAsDataURL(blob);
     }
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            setActiveButton(button);
+            switch (button.id) {
+                case 'homeBtn':
+                    loadHomeContent();
+                    break;
+                case 'scanBtn':
+                    loadScanContent();
+                    break;
+                case 'inventoryBtn':
+                    loadInventoryContent();
+                    break;
+            }
+        });
+    });
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+            const url = "http://127.0.0.1:5000/download_db"; // Ensure Flask is running at this address
+
+            // Creating an invisible anchor tag to trigger the download
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = 'result1.db'; // Optional: set filename for download
+            document.body.appendChild(anchor); // Append anchor to the body
+
+            anchor.click(); // Trigger click to start download
+
+            document.body.removeChild(anchor); // Clean up by removing the anchor from the body
+        });
+
+    loadHomeContent();
 </script>
 
 </body>
-</html>
 
+</html>
