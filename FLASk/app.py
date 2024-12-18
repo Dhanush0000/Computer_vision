@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 from torchvision import models, transforms
 import cv2
+import os
 from PIL import Image
 import numpy as np
 import base64
@@ -27,32 +28,20 @@ class_names_7 = ['Dairy and Eggs', 'HouseHold Care', 'Kitchen_products', 'Packag
                  'Snack and Beverages', 'Staples']
 
 # Helper function to load and modify the model
-def load_model(num_classes, model_path=None):
-    model = models.resnet101(weights="IMAGENET1K_V1")  # Load pretrained ResNet101
-    for param in model.parameters():
-        param.requires_grad = False  # Freeze all layers
+def load_improved_model(num_classes, model_path):
+    model_ft = models.resnet101(pretrained=True)
+    num_ftrs = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_ftrs, num_classes)  # Adjust for your number of classes
 
-    # Unfreeze last layers for fine-tuning
-    for layer in list(model.children())[-5:]:
-        for param in layer.parameters():
-            param.requires_grad = True
+    # Load the trained model weights
+    state_dict = torch.load(model_path, map_location=device)
+    model_ft.load_state_dict(state_dict)
 
-    # Modify the last fully connected layer with dropout
-    model.fc = nn.Sequential(
-        nn.Dropout(0.5),
-        nn.Linear(model.fc.in_features, num_classes)
-    )
-
-    # Load trained weights if provided
-    if model_path:
-        state_dict = torch.load(model_path, map_location=device)
-        model.load_state_dict(state_dict, strict=False)
-    
-    return model.to(device).eval()
+    return model_ft.to(device).eval()
 
 # Initialize both models with appropriate class counts and weights
-resnet_model_20 = load_model(len(class_names_20), 'resnet101_trained.pth')
-resnet_model_7 = load_model(len(class_names_7), 'resnet101_trained_gro.pth')
+resnet_model_20 = load_improved_model(len(class_names_20), 'resnet101_trained.pth')
+resnet_model_7 = load_improved_model(len(class_names_7), 'resnet101_trained_gro.pth')
 
 # Database models
 class Product(db.Model):
@@ -118,9 +107,6 @@ def save_results_to_file_and_db(scan_type, predicted_class, confidence_score):
     except Exception as e:
         print(f"General error: {e}")
 
-
-
-
 # Prediction function for PyTorch (ResNet, 20-class model)
 def predict_class_torch(image, model, class_names):
     image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -177,6 +163,7 @@ def scan_packaged_products():
         print(f"Error in scan_packaged_products: {e}")
         return jsonify({"message": "Scan failed"}), 500
 
+# Route to handle product scanning (POST request to add a product to the database)
 @app.route('/scan', methods=['POST'])
 def scan_product():
     data = request.json  # Assuming JSON data is sent with product details
@@ -188,6 +175,15 @@ def scan_product():
     except Exception as e:
         db.session.rollback()
         return {'message': f'Error saving product: {str(e)}'}, 500
+
+#for database download still testing
+@app.route('/download_db')
+def download_db():
+    db_path = 'result1.db'  # Ensure this is the correct path
+    if os.path.exists(db_path):
+        return send_file(db_path, as_attachment=True)  # Enable download
+    else:
+        return "Database file not found", 404
 
 if __name__ == '__main__':
     with app.app_context():
