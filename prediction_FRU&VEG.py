@@ -82,4 +82,4 @@ with open(r'C:\Users\traks\PycharmProjects\pythonProject\results.txt', 'w') as f
         f.write(f"{class_name}\t{data['count']}\t{data['confidence'] * 100:.2f}%\n")
 
 cap.release()
-
+cv2.destroyAllWindows()
